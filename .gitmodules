@@ -1,0 +1,3 @@
+[submodule "LGNN_modified/LGNN_original"]
+	path = LGNN_modified/LGNN_original
+	url = https://github.com/M3RG-IITD/LGNN.git
