@@ -1,10 +1,11 @@
 # Learning-Based Modeling of Lifted Object Dynamics for Haptic Rendering
 
-This repository is the official implementation of the project "Learning-Based Modeling of Lifted Object Dynamics for Haptic Rendering". It includes code for the two main components of the system: [LGNN_modified](https://github.com/Katsumi44/LiftedDynamics/tree/main/LGNN_modified) for Lagrangian-based dynamic modeling and [haptic_rendering](https://github.com/Katsumi44/LiftedDynamics/tree/main/haptic_rendering) for real-time haptic rendering.
+This repository is the official implementation of the project "Learning-Based Modeling of Lifted Object Dynamics for Haptic Rendering". It includes codes for the two main components of the system: folder [LGNN_modified](https://github.com/Katsumi44/LiftedDynamics/tree/main/LGNN_modified) for Lagrangian-based dynamic modeling and folder [haptic_rendering](https://github.com/Katsumi44/LiftedDynamics/tree/main/haptic_rendering) for real-time haptic rendering.
 
 The modified Lagrangian Graph Neural Network (LGNN) is based on the original LGNN [paper](https://proceedings.neurips.cc/paper_files/paper/2022/file/c0a9c840d651c295c095dad40e06fed9-Paper-Conference.pdf) and [codes](https://github.com/M3RG-IITD/LGNN/tree/ef932dbf3c9dcab8bb5ca4483e764ab158a8beac) written by Bhattoo et al. The contributions of this project are clarified below.
 
 ## Table of Contents
+
 - [System Overview](#system-overview)
 - [Lagrangian-Based Dynamic Modeling](#lagrangian-based-dynamic-modeling)
 - [Haptic Rendering (Real-Time Computation)](#haptic-rendering-real-time-computation)
@@ -27,7 +28,39 @@ The main contributions of this project include:
 
 ## Lagrangian-Based Dynamic Modeling
 
+### Overview
+
+The Lagrangian-based dynamic modeling part is responsible for learning object dynamics from data collected during arbitrary lifting and shaking motion input (especially for soft and deformable objects).
+
+The target object can be either a simulated object, which has its parameters predefined based on the dynamics simulation system, or a real-world object, using a computer vision system (e.g., a binocular vision system) to track the motion (trajectory) of the markers attached to the object. Although the core code for machine learning is mostly the same, the data collection (obtaining trajectory data from simulation or directly importing from files) and the data preprocessing parts differ significantly. Thus, the code is separated into two files: [main_SimulatedObject](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/scripts/main_SimulatedObject.py) and [main_RealObject](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/scripts/main_RealObject.py).
+
 ![Overview of Lagrangian-based dynamic modeling](figures/Lagrangian-based_dynamic_modeling.png)
+
+The core machine learning component is the modified LGNN. The modifications made in this project include parts related to virtual coupling, damping, stretching, bending, and twisting (the latter not used in practice). Other components follow the settings in the original LGNN [paper](https://proceedings.neurips.cc/paper_files/paper/2022/file/c0a9c840d651c295c095dad40e06fed9-Paper-Conference.pdf) and [code](https://github.com/M3RG-IITD/LGNN/tree/ef932dbf3c9dcab8bb5ca4483e764ab158a8beac) written by Bhattoo et al.
+
+![Architecture of the modified LGNN](figures/modified_LGNN.png)
+
+### Dependencies
+
+External libraries that need to be installed, along with the versions used by this project, are listed below:
+
+- `fire==0.6.0`
+- `matplotlib==3.9.0`
+- `jraph==0.0.6.dev0`
+- `numpy==1.26.4`
+- `pandas==2.2.2`
+- `scipy==1.12.0`
+- `scikit-learn==1.5.0`
+- `jax==0.4.23`
+- `jaxlib==0.4.23`
+- `jax-md==0.2.8`
+
+To install these packages, use the following command in the directory of [LGNN_modified](https://github.com/Katsumi44/LiftedDynamics/tree/main/LGNN_modified):
+
+`pip install -r requirements.txt`
+
+
+### Usage
 
 ## Haptic Rendering (Real-Time Computation)
 
