@@ -46,7 +46,7 @@ The core machine learning component is the modified LGNN. The modifications made
 
 ### Dependencies
 
-External libraries that need to be installed, along with the versions used by this project, are listed below:
+The Python programs [main_SimulatedObject](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/scripts/main_SimulatedObject.py) and [main_RealObject](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/scripts/main_RealObject.py) are run in the environment of Microsoft Windows 10 and Python 3.9.13. External libraries that need to be installed, along with the versions used by this project, are listed below:
 
 - `fire==0.6.0`
 - `matplotlib==3.9.0`
@@ -84,6 +84,46 @@ Before running the code, check and modify the settings for the global variables.
 - Set `execute_test=True` to execute tests for evaluating the learned model, which include frequency sweep, magnitude sweep, and scale sweep. The model path should be assigned to the variable `model_trained_path`, and the test results will be saved as CSV files.
 
 To obtain visualizations of the test results, place the CSV files in the [tests](https://github.com/Katsumi44/LiftedDynamics/tree/main/LGNN_modified/tests) folder and run the MATLAB program [test_plot](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/tests/test_plot.m). For the first-time loading of data, or when overwriting the loaded data is necessary, set `load_data=true`, and the program will automatically scan the CSV files and save the data as a cell.
+
+### Dataset Preparation (Data Collection)
+
+#### Simulated Objects
+
+For simulated objects, datasets are generated in the program [main_SimulatedObject](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/scripts/main_SimulatedObject.py) before the learning process, using the dynamics simulation system based on the `jax-md` library.
+
+#### Real-World Objects
+
+For real-world objects, the CSV files containing the training and test datasets must first be imported into the program [main_RealObject](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/scripts/main_RealObject.py). This project proposes a data collection system that automatically gathers these datasets from real-world objects. The system includes: a 3D-printed handheld knob with a force sensor (Robotiq FT300-S force torque sensor) attached at the bottom, with the object fixed below the force sensor; five markers attached to the object and four markers connected to the handheld knob; an OptiTrack V120:Duo binocular vision system for tracking the trajectory of the markers; and data collection software on a computer to collect, process, and save the data.
+
+![Overview of the data collection system](figures/data_collect.png)
+
+The data collection software consists of two parts: a custom Python program [main_DataCollect](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/datasets/main_DataCollect.py) and the Motive software used for OptiTrack cameras. The process for collecting data is as follows:
+
+1. Ensure that the OptiTrack V120:Duo binocular vision system and the Robotiq FT300-S force torque sensor are connected to the computer.
+
+2. Download the Motive software from [OptiTrack's official platform](https://optitrack.com/support/downloads/motive.html).
+
+3. Adjust the camera parameters in the Motive software to ensure that the markers are clearly visible in both the left and right camera images against the background.
+
+4. Select the five markers on the sample object to create a marker set, and use the four markers rigidly connected to the handheld knob to create a rigid body (and another marker set).
+
+5. Enable streaming mode in the Motive software and run the Python code [main_DataCollect](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/datasets/main_DataCollect.py), developed for this project.
+
+6. After hearing a beep from the computer, start shaking the sample object until the next beep is heard. The data will be saved in a CSV file, with the following units: mm for position, s for time, Hz for frequency, N for force, and Nm for torque.
+
+The Python program [main_DataCollect](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/datasets/main_DataCollect.py) is run in the environment of Microsoft Windows 10 and Python 3.9.7. External libraries that need to be installed, along with the versions used by this project, are listed below:
+
+- `libscrc==1.8.1`
+- `minimalmodbus==2.1.1`
+- `pyserial==3.5`
+- `setuptools==68.2.0`
+- `wheel==0.41.2`
+
+To install these packages, use the following command in the directory of [LGNN_modified/datasets](https://github.com/Katsumi44/LiftedDynamics/tree/main/LGNN_modified/datasets):
+
+`pip install -r requirements.txt`
+
+The Python program [main_DataCollect](https://github.com/Katsumi44/LiftedDynamics/blob/main/LGNN_modified/datasets/main_DataCollect.py) is based on the NatNet SDK, which can be downloaded from [OptiTrack's official platform](https://optitrack.com/support/downloads/developer-tools.html#natnet-sdk), and the sample Python program for extracting measurement data from the Robotiq FT300, available in [the GitHub repository created by the Robotiq community](https://github.com/castetsb/pyFT300). The basic functions are inherited, and the modifications in this project primarily focus on ensuring that data from OptiTrack and data from the force sensor are collected simultaneously for each time step, as well as saving the desired data with the appropriate units and formats.
 
 ## Haptic Rendering (Real-Time Computation)
 
