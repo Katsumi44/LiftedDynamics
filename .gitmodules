@@ -1,3 +1,6 @@
 [submodule "LGNN_modified/LGNN_original"]
 	path = LGNN_modified/LGNN_original
 	url = https://github.com/M3RG-IITD/LGNN.git
+[submodule "LGNN_modified/datasets/sample_ForceSensor"]
+	path = LGNN_modified/datasets/sample_ForceSensor
+	url = https://github.com/castetsb/pyFT300.git
