@@ -1,5 +1,5 @@
 libscrc==1.8.1
 minimalmodbus==2.1.1
 pyserial==3.5
-setuptools==68.2.0
+setuptools>=70.0.0
 wheel==0.41.2
